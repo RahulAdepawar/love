@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Realistic Rope Drop Animation</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            overflow: hidden;
+        }
+        .container {
+            position: relative;
+            height: 100vh;
+            width: 100%;
+        }
+        #svg {
+            position: absolute;
+            top: 0;
+            /* left: 50%; */
+            transform: translateX(-50%);
+        }
+        #svg2 {
+            position: absolute;
+            top: 0;
+            transform: translateX(-50%);
+        }
+        #fallingImage {
+            position: absolute;
+            /* left: 50%; */
+            width: 155px;
+            transform: translateX(-50%);
+        }
+
+        #fallingImage2 {
+            position: absolute;
+            /* left: 50%; */
+            width: 155px;
+            transform: translateX(-50%);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div style="position: absolute; left: 30%;">
+            <svg id="svg" width="200" height="400">
+                <path id="rope" d="M100,0 Q100,150 100,300" stroke="brown" stroke-width="4" fill="transparent" />
+            </svg>
+            <img class="image" id="fallingImage" src="https://4.img-dpreview.com/files/p/E~TS1180x0~articles/3925134721/0266554465.jpeg" alt="Falling Image">
+        </div>
+        <div style="position: absolute; left: 70%;">
+            <svg id="svg2" width="200" height="400">
+                <path id="rope2" d="M100,0 Q100,150 100,300" stroke="brown" stroke-width="4" fill="transparent" />
+            </svg>
+            <img class="image" id="fallingImage2" src="https://4.img-dpreview.com/files/p/E~TS1180x0~articles/3925134721/0266554465.jpeg" alt="Falling Image">
+        </div>
+    </div>
+    
+    <script>
+        gsap.to("#fallingImage", {
+            y: 150,
+            duration: 3,
+            ease: "power2.inOut",
+            onUpdate: function() {
+                let progress = this.progress();
+                let imageY = 150 * progress;
+                let image = document.getElementById("fallingImage");
+                let imageHeight = image.clientHeight;
+                let endY = imageY + imageHeight / 2;
+                let endX = 100;
+                
+                let swingFactor = Math.sin(progress * Math.PI * 2) * (1 - progress) * 80; // Increased curvature swing for smoother motion
+                let controlX = 100 + swingFactor; 
+                let controlY = endY / 1.3; 
+                
+                document.getElementById("rope").setAttribute("d", `M100,0 Q${controlX},${controlY} ${endX},${endY}`);
+
+                let angle = Math.atan2(controlY - endY, controlX - endX) * (180 / Math.PI) * 0.8; // Smoothed rotation
+                image.style.transform = `translateX(-50%) translateY(${imageY}px) rotate(${angle}deg)`;
+            },
+            onComplete: function() {
+                let image = document.getElementById("fallingImage");
+                let computedStyle = window.getComputedStyle(image);
+                let matrix = new WebKitCSSMatrix(computedStyle.transform);
+                let currentAngle = Math.atan2(matrix.m21, matrix.m11) * (180 / Math.PI);
+                gsap.to("#fallingImage", {
+                    duration: 4,
+                    rotation: -50,
+                    ease: "elastic.out(1, 0.4)",
+                    startAt: { rotation: -currentAngle } // Ensure it starts from the detected angle
+                });
+            }
+        });
+
+        gsap.to("#fallingImage2", {
+            y: 150,
+            duration: 2.5,
+            ease: "power2.inOut",
+            onUpdate: function() {
+                let progress = this.progress();
+                let imageY = 150 * progress;
+                let image = document.getElementById("fallingImage2");
+                let imageHeight = image.clientHeight;
+                let endY = imageY + imageHeight / 2;
+                let endX = 100;
+                
+                let swingFactor = Math.sin(progress * Math.PI * 2) * (1 - progress) * 80; // Increased curvature swing for smoother motion
+                let controlX = 100 + swingFactor; 
+                let controlY = endY / 1.3; 
+                
+                document.getElementById("rope2").setAttribute("d", `M100,0 Q${controlX},${controlY} ${endX},${endY}`);
+
+                let angle = Math.atan2(controlY - endY, controlX - endX) * (180 / Math.PI) * 0.8; // Smoothed rotation
+                image.style.transform = `translateX(-50%) translateY(${imageY}px) rotate(${angle}deg)`;
+            },
+            onComplete: function() {
+                let image = document.getElementById("fallingImage2");
+                let computedStyle = window.getComputedStyle(image);
+                let matrix = new WebKitCSSMatrix(computedStyle.transform);
+                let currentAngle = Math.atan2(matrix.m21, matrix.m11) * (180 / Math.PI);
+                gsap.to("#fallingImage2", {
+                    duration: 4,
+                    rotation: -25,
+                    ease: "elastic.out(1, 0.4)",
+                    startAt: { rotation: -currentAngle } // Ensure it starts from the detected angle
+                });
+            }
+        });
+    </script>
+</body>
+</html>
