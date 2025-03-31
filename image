@@ -1,136 +1,168 @@
-<!DOCTYPE html>
-<html lang="en">
+<html>
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Realistic Rope Drop Animation</title>
+    <title>love you</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <style>
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f0f0f0;
-            overflow: hidden;
-        }
-        .container {
-            position: relative;
-            height: 100vh;
-            width: 100%;
-        }
-        #svg {
-            position: absolute;
-            top: 0;
-            /* left: 50%; */
-            transform: translateX(-50%);
-        }
+    <style>  
+        #svg,
         #svg2 {
             position: absolute;
             top: 0;
             transform: translateX(-50%);
         }
-        #fallingImage {
+
+        img {
+            border-radius: 5px;
+        }
+
+        .image {
             position: absolute;
-            /* left: 50%; */
             width: 155px;
             transform: translateX(-50%);
         }
 
-        #fallingImage2 {
+        #cutButton {
             position: absolute;
-            /* left: 50%; */
-            width: 155px;
-            transform: translateX(-50%);
+            top: 20px;
+            padding: 10px 20px;
+            font-size: 18px;
+            cursor: pointer;
+            background-color: red;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            z-index: 10;
+            opacity: 0;
         }
+        .bg_heart {
+            position: relative;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-size: 100% 100%;
+            z-index: -1;
+        }
+
+        .container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            text-align: center;
+            color: white;
+            font-family: cursive;
+        }
+
+
+        .heart {
+            position: absolute;
+            top: -50%;
+            transform: rotate(-45deg);
+            -webkit-transform: rotate(-45deg);
+            -moz-transform: rotate(-45deg);
+            -m-transform: rotate(-45deg);
+        }
+
+        .heart:before {
+            position: absolute;
+            top: -50%;
+            left: 0;
+            display: block;
+            content: "";
+            width: 100%;
+            height: 100%;
+            background: inherit;
+            border-radius: 100%;
+        }
+
+        .heart:after {
+            position: absolute;
+            top: 0;
+            right: -50%;
+            display: block;
+            content: "";
+            width: 100%;
+            height: 100%;
+            background: inherit;
+            border-radius: 100%;
+        }
+
+        @keyframes love {
+            0% {
+                top: 110%
+            }
+        }
+
+        @-webkit-keyframes love {
+            0% {
+                top: 110%
+            }
+        }
+
+        @-moz-keyframes love {
+            0% {
+                top: 110%
+            }
+        }
+
+        @-ms-keyframes love {
+            0% {
+                top: 110%
+            }
+        }
+
+        /* #first_part {
+            position: relative;
+            z-index : -9;
+        }
+
+        #second_part {
+            position: relative;
+            z-index : 9;
+        } */
     </style>
 </head>
+
 <body>
-    <div class="container">
-        <div style="position: absolute; left: 30%;">
-            <svg id="svg" width="200" height="400">
-                <path id="rope" d="M100,0 Q100,150 100,300" stroke="brown" stroke-width="4" fill="transparent" />
-            </svg>
-            <img class="image" id="fallingImage" src="https://4.img-dpreview.com/files/p/E~TS1180x0~articles/3925134721/0266554465.jpeg" alt="Falling Image">
-        </div>
-        <div style="position: absolute; left: 70%;">
-            <svg id="svg2" width="200" height="400">
-                <path id="rope2" d="M100,0 Q100,150 100,300" stroke="brown" stroke-width="4" fill="transparent" />
-            </svg>
-            <img class="image" id="fallingImage2" src="https://4.img-dpreview.com/files/p/E~TS1180x0~articles/3925134721/0266554465.jpeg" alt="Falling Image">
+    <div id="first_part">
+        <div class="container">
+            <div style="position: absolute; left: 30%;">
+                <svg id="svg" width="200" height="400">
+                    <path id="rope" d="M100,0 Q100,150 100,300" stroke="brown" stroke-width="4" fill="transparent" />
+                </svg>
+                <img class="image" id="fallingImage" src="./sample.jpg" alt="Falling Image">
+            </div>
+            <div style="position: absolute; left: 70%;">
+                <svg id="svg2" width="200" height="400">
+                    <path id="rope2" d="M100,0 Q100,150 100,300" stroke="brown" stroke-width="4" fill="transparent" />
+                </svg>
+                <img class="image" id="fallingImage2"
+                    src="https://4.img-dpreview.com/files/p/E~TS1180x0~articles/3925134721/0266554465.jpeg"
+                    alt="Falling Image">
+            </div>
         </div>
     </div>
-    
-    <script>
-        gsap.to("#fallingImage", {
-            y: 150,
-            duration: 3,
-            ease: "power2.inOut",
-            onUpdate: function() {
-                let progress = this.progress();
-                let imageY = 150 * progress;
-                let image = document.getElementById("fallingImage");
-                let imageHeight = image.clientHeight;
-                let endY = imageY + imageHeight / 2;
-                let endX = 100;
-                
-                let swingFactor = Math.sin(progress * Math.PI * 2) * (1 - progress) * 80; // Increased curvature swing for smoother motion
-                let controlX = 100 + swingFactor; 
-                let controlY = endY / 1.3; 
-                
-                document.getElementById("rope").setAttribute("d", `M100,0 Q${controlX},${controlY} ${endX},${endY}`);
-
-                let angle = Math.atan2(controlY - endY, controlX - endX) * (180 / Math.PI) * 0.8; // Smoothed rotation
-                image.style.transform = `translateX(-50%) translateY(${imageY}px) rotate(${angle}deg)`;
-            },
-            onComplete: function() {
-                let image = document.getElementById("fallingImage");
-                let computedStyle = window.getComputedStyle(image);
-                let matrix = new WebKitCSSMatrix(computedStyle.transform);
-                let currentAngle = Math.atan2(matrix.m21, matrix.m11) * (180 / Math.PI);
-                gsap.to("#fallingImage", {
-                    duration: 4,
-                    rotation: -50,
-                    ease: "elastic.out(1, 0.4)",
-                    startAt: { rotation: -currentAngle } // Ensure it starts from the detected angle
-                });
-            }
-        });
-
-        gsap.to("#fallingImage2", {
-            y: 150,
-            duration: 2.5,
-            ease: "power2.inOut",
-            onUpdate: function() {
-                let progress = this.progress();
-                let imageY = 150 * progress;
-                let image = document.getElementById("fallingImage2");
-                let imageHeight = image.clientHeight;
-                let endY = imageY + imageHeight / 2;
-                let endX = 100;
-                
-                let swingFactor = Math.sin(progress * Math.PI * 2) * (1 - progress) * 80; // Increased curvature swing for smoother motion
-                let controlX = 100 + swingFactor; 
-                let controlY = endY / 1.3; 
-                
-                document.getElementById("rope2").setAttribute("d", `M100,0 Q${controlX},${controlY} ${endX},${endY}`);
-
-                let angle = Math.atan2(controlY - endY, controlX - endX) * (180 / Math.PI) * 0.8; // Smoothed rotation
-                image.style.transform = `translateX(-50%) translateY(${imageY}px) rotate(${angle}deg)`;
-            },
-            onComplete: function() {
-                let image = document.getElementById("fallingImage2");
-                let computedStyle = window.getComputedStyle(image);
-                let matrix = new WebKitCSSMatrix(computedStyle.transform);
-                let currentAngle = Math.atan2(matrix.m21, matrix.m11) * (180 / Math.PI);
-                gsap.to("#fallingImage2", {
-                    duration: 4,
-                    rotation: -25,
-                    ease: "elastic.out(1, 0.4)",
-                    startAt: { rotation: -currentAngle } // Ensure it starts from the detected angle
-                });
-            }
-        });
-    </script>
+    <div id="second_part">
+        <div class="bg_heart">
+        </div>
+    </div>
+    <button id="cutButton">Cut Ropes</button>
 </body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="./script.js"></script>
+<script>
+    var love = setInterval(function () {
+        var r_num = Math.floor(Math.random() * 40) + 1;
+        var r_size = Math.floor(Math.random() * 65) + 10;
+        var r_left = Math.floor(Math.random() * 100) + 1;
+        var r_bg = Math.floor(Math.random() * 25) + 100;
+        var r_time = Math.floor(Math.random() * 5) + 5;
+        $('.bg_heart').append("<div class='heart' style='width:" + r_size + "px;height:" + r_size + "px;left:" + r_left + "%;background:rgba(255," + (r_bg - 25) + "," + r_bg + ",1);-webkit-animation:love " + r_time + "s ease;-moz-animation:love " + r_time + "s ease;-ms-animation:love " + r_time + "s ease;animation:love " + r_time + "s ease'></div>");
+        $('.bg_heart').append("<div class='heart' style='width:" + (r_size - 10) + "px;height:" + (r_size - 10) + "px;left:" + (r_left + r_num) + "%;background:rgba(255," + (r_bg - 25) + "," + (r_bg + 25) + ",1);-webkit-animation:love " + (r_time + 5) + "s ease;-moz-animation:love " + (r_time + 5) + "s ease;-ms-animation:love " + (r_time + 5) + "s ease;animation:love " + (r_time + 5) + "s ease'></div>");
+    }, 500);
+</script>
+
 </html>
